@@ -7,7 +7,7 @@ The app allows users to input property details such as area, number of bedrooms,
 ---
 
 ## 📸 Demo Link
-[Visit the Deployed App on Netlify](https://wondrous-pithivier-637342.netlify.app)
+https://estate-ptediction.netlify.app/
 
 ---
 
