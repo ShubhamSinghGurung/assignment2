@@ -1,32 +1,31 @@
-import brain from "brain.js";
+// trainModel.js
 
-// Function to train the model
-export const trainModel = (data) => {
-  const net = new brain.NeuralNetwork({
-    hiddenLayers: [5, 5], // Neural network architecture
-    activation: "sigmoid", // Activation function
-  });
-
-  // Prepare the training data
-  const trainingData = data.map((item) => ({
-    input: {
-      area: item.area,
-      bedrooms: item.bedrooms,
-      bathrooms: item.bathrooms,
-      location: item.location,
-      age: item.age,
-    },
-    output: { price: item.price },
+/**
+ * Trains a Brain.js neural network using real estate data.
+ * @param {NeuralNetwork} model - Instance of brain.js NeuralNetwork to train.
+ * @param {Array} data - Array of training data.
+ * @returns {NeuralNetwork} Trained model.
+ */
+export function trainModel(model, data) {
+  const formattedData = data.map(item => ({
+      input: {
+          area: item.area / 5000,   // Normalize area
+          bedrooms: item.bedrooms / 5,  // Normalize bedrooms (assuming max 5)
+          bathrooms: item.bathrooms / 5, // Normalize bathrooms
+          location: item.location / 3,   // Normalize location (assuming 3 locations)
+          age: item.age / 50             // Normalize age (assuming max age 50)
+      },
+      output: {
+          price: item.price / 1000000    // Normalize price (assuming max price 1M)
+      }
   }));
 
-  // Train the neural network
-  net.train(trainingData, {
-    iterations: 2000, // Number of training cycles
-    errorThresh: 0.005, // Minimum error threshold to stop training
-    log: true, // Log training progress
-    logPeriod: 100, // Log after every 100 iterations
-    learningRate: 0.3, // Adjust how fast the model learns
+  model.train(formattedData, {
+      iterations: 2000,
+      errorThresh: 0.01,
+      log: true,
+      logPeriod: 100,
   });
 
-  return net.toJSON(); // Return trained model as JSON
-};
+  return model;
+}

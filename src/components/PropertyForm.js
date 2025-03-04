@@ -9,33 +9,125 @@ const PropertyForm = ({ onSubmit }) => {
     age: "",
   });
 
+  const [error, setError] = useState("");
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const validateForm = () => {
+    const { area, bedrooms, bathrooms, location, age } = formData;
+
+    if (!area || !bedrooms || !bathrooms || !location || !age) {
+      return "All fields are required.";
+    }
+
+    if (area <= 0 || bedrooms <= 0 || bathrooms <= 0 || age < 0) {
+      return "All numerical values must be positive.";
+    }
+
+    if (![1, 2, 3].includes(Number(location))) {
+      return "Location must be 1, 2, or 3.";
+    }
+
+    return null;
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
+    const validationError = validateForm();
+    if (validationError) {
+      setError(validationError);
+      return;
+    }
+    setError("");
     onSubmit(formData);
   };
 
   return (
-    <form onSubmit={handleSubmit} className="p-4 border rounded shadow">
-      <label>Area (sq ft):</label>
-      <input type="number" name="area" onChange={handleChange} required />
+    <form
+      onSubmit={handleSubmit}
+      className="card shadow-lg p-4 border-0"
+      style={{ backgroundColor: "#f8f9fa" }}
+    >
+      <h3 className="mb-4 text-center text-primary">🏡 Property Details</h3>
 
-      <label>Bedrooms:</label>
-      <input type="number" name="bedrooms" onChange={handleChange} required />
+      {error && (
+        <div className="alert alert-danger text-center">
+          {error}
+        </div>
+      )}
 
-      <label>Bathrooms:</label>
-      <input type="number" name="bathrooms" onChange={handleChange} required />
+      <div className="row g-3">
+        <div className="col-md-6">
+          <label className="form-label">Area (sq ft):</label>
+          <input
+            type="number"
+            name="area"
+            value={formData.area}
+            onChange={handleChange}
+            className="form-control"
+            required
+          />
+        </div>
 
-      <label>Location (1, 2, 3...):</label>
-      <input type="number" name="location" onChange={handleChange} required />
+        <div className="col-md-6">
+          <label className="form-label">Bedrooms:</label>
+          <input
+            type="number"
+            name="bedrooms"
+            value={formData.bedrooms}
+            onChange={handleChange}
+            className="form-control"
+            required
+          />
+        </div>
 
-      <label>Age of Property:</label>
-      <input type="number" name="age" onChange={handleChange} required />
+        <div className="col-md-6">
+          <label className="form-label">Bathrooms:</label>
+          <input
+            type="number"
+            name="bathrooms"
+            value={formData.bathrooms}
+            onChange={handleChange}
+            className="form-control"
+            required
+          />
+        </div>
 
-      <button type="submit">Predict Price</button>
+        <div className="col-md-6">
+          <label className="form-label">Location (1, 2, 3):</label>
+          <input
+            type="number"
+            name="location"
+            value={formData.location}
+            onChange={handleChange}
+            className="form-control"
+            required
+          />
+        </div>
+
+        <div className="col-12">
+          <label className="form-label">Age of Property:</label>
+          <input
+            type="number"
+            name="age"
+            value={formData.age}
+            onChange={handleChange}
+            className="form-control"
+            required
+          />
+        </div>
+      </div>
+
+      <div className="mt-4">
+        <button
+          type="submit"
+          className="btn btn-success w-100 fw-bold"
+        >
+          🔮 Predict Price
+        </button>
+      </div>
     </form>
   );
 };

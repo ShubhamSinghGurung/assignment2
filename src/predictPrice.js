@@ -1,24 +1,24 @@
-import brain from "brain.js";
+// predictPrice.js
 
-// Function to predict price based on user input
-export const predictPrice = (trainedModel, formData) => {
-  if (!trainedModel) {
-    return "Model not available";
-  }
-
-  const net = new brain.NeuralNetwork();
-  net.fromJSON(trainedModel); // Load trained model
-
-  // Normalize input values (same way we did during training)
+/**
+ * Predicts the price using a trained Brain.js model.
+ * @param {NeuralNetwork} model - Trained brain.js NeuralNetwork.
+ * @param {Object} formData - Input form data.
+ * @returns {number} Predicted price.
+ */
+export function predictPrice(model, formData) {
   const input = {
-    area: formData.area / 1, // Already normalized in dataset
-    bedrooms: formData.bedrooms / 1,
-    bathrooms: formData.bathrooms / 1,
-    location: formData.location / 1,
-    age: formData.age / 1,
+      area: formData.area / 5000,
+      bedrooms: formData.bedrooms / 5,
+      bathrooms: formData.bathrooms / 5,
+      location: formData.location / 3,
+      age: formData.age / 50,
   };
 
-  // Predict price
-  const output = net.run(input);
-  return output.price * 1000000; // Convert back to actual price
-};
+  const output = model.run(input);
+
+  // Scale the price back to normal range
+  const predictedPrice = output.price * 1000000;
+
+  return predictedPrice;
+}
